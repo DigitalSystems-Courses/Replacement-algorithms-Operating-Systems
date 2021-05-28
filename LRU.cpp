@@ -21,32 +21,29 @@ int M[5][30];
 int LRU[5] = {10, 10, 10, 10, 10};
 int C1[6] = {0, 1, 2, 3, 4, 5};
 
-enum PROCESO {
-    A, B, C, D, E, F, G, H, I, J
-};
-
-void init() {
+void init() { //Inicializa las matrices
     int rand;
-    for(int r = 0; r < 5; r++) {
+    for(int r = 0; r < 5; r++) { //Inicia la matriz principal
         for(int c = 0; c < 30; c++) {
             M[r][c] = 10;
         }
     }
-    for(int i = 0; i < 30; i++) {
-        rand = std::rand() % 10;
+    for(int i = 0; i < 30; i++) { //Inicia la matriz con caracteres alazar
+        rand = std::rand() % 10; //0-9
         R1[i] = rand;
     }
 };
 
 int main() {
     srand(time(NULL));
-    int target, faults = 0, temp;
-    bool check = true, flag = false;
+    int faults = 0, temp;
+    bool flag = false;
     init();
     for(int c = 0; c < 30; c++) {
-        if(contains(LRU, R1[c])) {
+        //LRU
+        if(contains(LRU, R1[c])) { //Checa si la variable mas actual esta dentro del arreglo LRU
             for(int i = 4; i != 0; i--) {
-                if(LRU[i] == R1[c]) {
+                if(LRU[i] == R1[c]) { //Actualiza a que la posicion del LRU 0 sea la de la nueva variable
                     temp = LRU[i - 1];
                     LRU[i - 1] = LRU[i];
                     LRU[i] = temp;
@@ -55,26 +52,27 @@ int main() {
         }
         else {
             faults++;
-            target = LRU[4];
-            for(int i = 4; i != 0; i--) {
+            for(int i = 4; i != 0; i--) { //Empuja las letras hacia atras
                 LRU[i] = LRU[i - 1];
             }
-            LRU[0] = R1[c];
+            LRU[0] = R1[c]; //Pone la letra mas nueva como p0
         }
+        //LRU
+
+        //LLENAR MATRIZ
         for(int r = 0; r < 5; r++) {
             if(c == 0) {
                 if(r == 0) {
-                    M[0][0] = R1[0];
+                    M[0][0] = R1[0]; //Inicia la primera columna
                 }
             }
-            else if(contains(LRU, M[r][c - 1]) && M[r][c - 1] != 10) {
+            else if(contains(LRU, M[r][c - 1]) && M[r][c - 1] != 10) { //Checa si la columna anterior de la matriz contiene algo del LRU
                 M[r][c] = M[r][c - 1];
             }
-            else if(check) {
-                check = false;
+            else { //Este caso sirve hasta llenar las primeras 5 filas dentro de la matriz
                 for(int i = 0; i < r; i++) {
                     if(LRU[0] == M[i][c]) {
-                        flag = true;
+                        flag = true; 
                     }
                 }
                 if(!flag) {
@@ -82,8 +80,8 @@ int main() {
                 }
             }
         }
+        //LLENAR MATRIZ
         flag = false;
-        check = true;
     }
     PRINT_MATRIX();
     PRINT("Fallas:");
@@ -95,11 +93,11 @@ int main() {
     return 0;
 }
 
-void PRINT_MATRIX() {
+void PRINT_MATRIX() { //IMPRIME MATRIZ
     std::cout << std::endl;
     PRINT(C1[0])
     for(int i : R1) {
-        PRINT(P[PROCESO(i)]);
+        PRINT(P[i]);
     }
     std::cout << std::endl;
     for(int r = 0; r < 5; r++) {
